@@ -11,12 +11,27 @@ class FavoritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Favorites"),
-        backgroundColor: Colors.white,
-        elevation: 1,
-        centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.black),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(80), // Taller AppBar
+        child: AppBar(
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [mainRed, mainPink]),
+            ),
+          ),
+          title: const Text(
+            "Favorites",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white, // Text color white for contrast
+              fontSize: 24,
+            ),
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+          iconTheme: const IconThemeData(color: Colors.white),
+        ),
       ),
       body: Obx(() {
         if (controller.favorites.isEmpty) {
