@@ -51,7 +51,10 @@ class HomeScreen extends StatelessWidget {
           _categorySection(screenWidth),
           const SizedBox(height: 16),
           _header("Popular Dishes", "View All"),
-          _responsiveMenuGrid(MenuData.menuItems.take(6).toList(), cartController, screenWidth),
+          _responsiveMenuGrid(
+              MenuData.menuItems.take(6).toList(),
+              cartController,
+              screenWidth),
           const SizedBox(height: 16),
           _header("Chef's Recommendation", "View All"),
           _recommendationList(MenuData.menuItems, cartController, screenWidth),
@@ -70,8 +73,8 @@ class HomeScreen extends StatelessWidget {
       shadowColor: Colors.black12,
       title: Row(
         children: [
-          Image.asset("assets/logo.png", height: 32),
-          const SizedBox(width: 8),
+          Image.asset("assets/logo.png", height: 35),
+          const SizedBox(width: 10),
           Text(
             "Foodie",
             style: TextStyle(
@@ -285,7 +288,8 @@ class HomeScreen extends StatelessWidget {
   Widget _responsiveMenuGrid(
       List<FoodItem> items, CartController controller, double screenWidth) {
     int crossAxisCount = screenWidth > 800 ? 3 : 1;
-    double itemWidth = (screenWidth - 32 - (crossAxisCount - 1) * 16) / crossAxisCount;
+    double itemWidth =
+        (screenWidth - 32 - (crossAxisCount - 1) * 16) / crossAxisCount;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -297,7 +301,7 @@ class HomeScreen extends StatelessWidget {
           crossAxisCount: crossAxisCount,
           mainAxisSpacing: 12,
           crossAxisSpacing: 12,
-          childAspectRatio: itemWidth / 230,
+          childAspectRatio: itemWidth / 260,
         ),
         itemBuilder: (_, index) =>
             _buildMenuCard(items[index], controller, width: itemWidth),
@@ -312,7 +316,7 @@ class HomeScreen extends StatelessWidget {
       List<FoodItem> items, CartController controller, double screenWidth) {
     double cardWidth = screenWidth > 600 ? 200 : 160;
     return SizedBox(
-      height: 250,
+      height: 260,
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         scrollDirection: Axis.horizontal,
@@ -339,8 +343,8 @@ class HomeScreen extends StatelessWidget {
                     item.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w700),
                   ),
                 ),
                 Padding(
@@ -348,10 +352,14 @@ class HomeScreen extends StatelessWidget {
                   child: Text(
                     "\$${item.price}",
                     style: TextStyle(
-                        color: mainRed, fontSize: 15, fontWeight: FontWeight.bold),
+                        color: mainRed,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
-                _addButton(item, controller),
+
+                // NEW BUTTON ROW
+                _actionButtons(item, controller),
               ],
             ),
           );
@@ -360,6 +368,9 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  // ----------------------------------------------------------
+  // MENU CARD
+  // ----------------------------------------------------------
   Widget _buildMenuCard(FoodItem item, CartController controller,
       {double width = 170}) {
     return Container(
@@ -401,7 +412,8 @@ class HomeScreen extends StatelessWidget {
               item.name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+              style:
+              const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             ),
           ),
           Padding(
@@ -412,33 +424,80 @@ class HomeScreen extends StatelessWidget {
                   color: mainRed, fontSize: 15, fontWeight: FontWeight.bold),
             ),
           ),
-          _addButton(item, controller),
+
+          // NEW BUTTON ROW
+          _actionButtons(item, controller),
         ],
       ),
     );
   }
 
-  Widget _addButton(FoodItem item, CartController controller) {
+  // ----------------------------------------------------------
+  // NEW HORIZONTAL ADD + BUY BUTTONS
+  // ----------------------------------------------------------
+  Widget _actionButtons(FoodItem item, CartController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      child: InkWell(
-        onTap: () => controller.addToCart(item),
-        child: Container(
-          height: 38,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [mainRed, mainPink]),
-            borderRadius: BorderRadius.circular(20),
+      child: Row(
+        children: [
+          // ADD BUTTON
+          Expanded(
+            child: InkWell(
+              onTap: () => controller.addToCart(item),
+              child: Container(
+                height: 38,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [mainRed, mainPink]),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Center(
+                  child: Text(
+                    "Add",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
-          child: const Center(
-            child: Text("Add",
-                style:
-                TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+
+          const SizedBox(width: 10),
+
+          // BUY NOW BUTTON → CHECKOUT
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                controller.addToCart(item);
+                Get.toNamed("/checkout"); // ← redirect to checkout
+              },
+              child: Container(
+                height: 38,
+                decoration: BoxDecoration(
+                  color: Colors.black87,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Center(
+                  child: Text(
+                    "Buy Now",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 
+  // ----------------------------------------------------------
+  // CARD STYLE
+  // ----------------------------------------------------------
   BoxDecoration _cardStyle() {
     return BoxDecoration(
       color: Colors.white,
